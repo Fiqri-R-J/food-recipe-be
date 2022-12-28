@@ -36,25 +36,33 @@ const getUserByEmail = async (params) => {
 
 // add new user to db
 const addNewUsers = async (params) => {
-  const { name, email, phone, password, photo } = params
+  const { name, email, phone_number, password, photo } = params
 
   return await db`
       INSERT INTO users (name, email, password, phone_number, profil_picture) 
-      VALUES (${name}, ${email}, ${password}, ${phone}, ${photo})
+      VALUES (${name}, ${email}, ${password}, ${phone_number}, ${photo})
     `
 }
 
 // update user
 const updateUser = async (params) => {
-  const { name, email, phone, password, photo, id, defaultValue } = params
+  const {
+    name,
+    email,
+    password,
+    phone_number,
+    profil_picture,
+    id,
+    defaultValue,
+  } = params
 
   return await db`
     UPDATE users SET
       "name" = ${name || defaultValue?.name},
       "email" = ${email || defaultValue?.email},
-      "phone" = ${phone || defaultValue?.phone},
       "password" = ${password || defaultValue?.password},
-      "photo" = ${photo || defaultValue?.photo}
+      "phone_number" = ${phone_number || defaultValue?.phone_number},
+      "profil_picture" = ${profil_picture || defaultValue?.profil_picture}
     WHERE "id" = ${id};
   `
 }

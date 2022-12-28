@@ -65,7 +65,7 @@ const getUsers = async (req, res) => {
 
 const postUsers = async (req, res) => {
   try {
-    const { name, email, phone, password } = req.body
+    const { name, email, phone_number, password } = req.body
 
     const checkDuplicateEmail = await accouts.getUserByEmail({ email })
 
@@ -74,7 +74,7 @@ const postUsers = async (req, res) => {
     }
 
     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-    let file = req.files.photo
+    let file = req.files?.photo
     // let fileName = `${uuidv4()}-${file.name}`
     // let uploadPath = `${path.dirname(require.main.filename)}/public/${fileName}`
     let mimeType = file.mimetype.split('/')[1]
@@ -103,7 +103,7 @@ const postUsers = async (req, res) => {
             const addToDb = await accouts.addNewUsers({
               name,
               email,
-              phone,
+              phone_number,
               password: hash,
               photo: result.url,
             })
@@ -135,7 +135,7 @@ const postUsers = async (req, res) => {
 const editUsers = async (req, res) => {
   try {
     const { id } = req.params
-    const { name, email, phone, password, photo } = req.body
+    const { name, email, password, phone_number, profil_photo } = req.body
 
     const getUser = await accouts.getUserById({ id })
 
@@ -144,16 +144,15 @@ const editUsers = async (req, res) => {
       await accouts.updateUser({
         name,
         email,
-        phone,
         password,
-        photo,
+        phone_number,
+        profil_photo,
         id,
         defaultValue: getUser[0], // default value if input not add in postman
       })
     } else {
       throw 'ID Tidak terdaftar'
     }
-
     res.json({
       status: true,
       message: 'berhasil di ubah',

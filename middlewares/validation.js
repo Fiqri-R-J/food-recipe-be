@@ -10,14 +10,14 @@ const validateCreate = (req, res, next) => {
 
   addCustomMessages({
     'name.required': 'Prriitt wajib ada',
-    'name.minLength': 'Priittt kependekan',
+    'name.minLength': 'Nama terlalu pendek',
     'name.nameNotContainPassword': 'Nama tidak boleh mengandung password',
   })
 
   const rules = new Validator(req.body, {
     name: 'required|minLength:5|maxLength:50|nameNotContainPassword',
     email: 'required|minLength:3|maxLength:70|email',
-    phone: 'required|minLength:6|maxLength:14|phoneNumber',
+    phone_number: 'required|minLength:6|maxLength:14|phoneNumber',
     password: 'required|minLength:8|alphaNumeric',
   })
 
