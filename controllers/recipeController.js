@@ -127,4 +127,58 @@ const postRecipe = async (req, res) => {
   }
 }
 
-module.exports = { getRecipe, postRecipe }
+const editRecipe = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { name, description, category, picture, ingredients, video } =
+      req.body
+
+    const getRecipe = await recipes.getRecipeById({ id })
+
+    if (getRecipe) {
+      // INSERT INTO account (id, name, email, password, phone, photo) VALUES ("bilkis")
+      await recipes.updateRecipe({
+        name,
+        description,
+        category,
+        picture,
+        ingredients,
+        video,
+        id,
+        defaultValue: getRecipe[0], // default value if input not add in postman
+      })
+    } else {
+      throw 'ID Tidak terdaftar'
+    }
+    res.json({
+      status: true,
+      message: 'berhasil di ubah',
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: error?.message ?? error,
+      data: [],
+    })
+  }
+}
+
+const deleteRecipe = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    await recipes.deleteRecipeById({ id })
+
+    res.json({
+      status: true,
+      message: 'berhasil di hapus',
+    })
+  } catch (error) {
+    res.status(500).json({
+      status: false,
+      message: error?.message ?? error,
+      data: [],
+    })
+  }
+}
+module.exports = { getRecipe, postRecipe, editRecipe, deleteRecipe }

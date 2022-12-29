@@ -47,10 +47,44 @@ const addNewRecipe = async (params) => {
     `
 }
 
+// update user
+const updateRecipe = async (params) => {
+  const {
+    name,
+    description,
+    category,
+    picture,
+    ingredients,
+    video,
+    id,
+    defaultValue,
+  } = params
+
+  return await db`
+    UPDATE recipe SET
+      "name" = ${name || defaultValue?.name},
+      "description" = ${description || defaultValue?.description},
+      "category" = ${category || defaultValue?.category},
+      "picture" = ${picture || defaultValue?.picture},
+      "ingredients" = ${ingredients || defaultValue?.ingredients},
+      "video" = ${video || defaultValue?.video}
+    WHERE "id" = ${id};
+  `
+}
+
+// delete user by id
+const deleteRecipeById = async (params) => {
+  const { id } = params
+
+  return await db`DELETE FROM "public"."recipe" WHERE "id" = ${id}`
+}
+
 module.exports = {
   getAllRecipePagination,
   searchRecipeByName,
   getAllRecipe,
   getRecipeById,
   addNewRecipe,
+  updateRecipe,
+  deleteRecipeById,
 }

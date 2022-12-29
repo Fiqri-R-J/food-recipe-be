@@ -9,4 +9,10 @@ router.get('/:id?', useRedis, recipeController.getRecipe)
 // CREATE
 router.post('/add', recipeController.postRecipe)
 
+// UPDATE
+router.patch('/edit/:id', recipeController.editRecipe)
+
+//  DELETE
+router.delete('/delete/:id', recipeController.deleteRecipe)
+
 module.exports = router
