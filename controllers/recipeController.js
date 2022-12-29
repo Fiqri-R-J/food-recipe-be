@@ -1,5 +1,7 @@
 const recipes = require('../models/recipes')
+const { v4: uuidv4 } = require('uuid')
 const { connect } = require('../middlewares/redis')
+const { cloudinary } = require('../helper')
 
 const getRecipe = async (req, res) => {
   try {
@@ -22,6 +24,10 @@ const getRecipe = async (req, res) => {
     } else {
       // OFFSET & LIMIT
       let getAllRecipe
+
+      // if (search) {
+      //   getAllRecipe = await recipes.searchRecipeByName({ search })
+      // }
 
       if (limit && page) {
         getAllRecipe = await recipes.getAllRecipePagination({
@@ -63,4 +69,62 @@ const getRecipe = async (req, res) => {
   }
 }
 
-module.exports = { getRecipe }
+const postRecipe = async (req, res) => {
+  try {
+    const { name, description, category, ingredients, video } = req.body
+
+    // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+    let file = req.files?.picture
+    // let fileName = `${uuidv4()}-${file.name}`
+    // let uploadPath = `${path.dirname(require.main.filename)}/public/${fileName}`
+    let mimeType = file.mimetype.split('/')[1]
+    let allowFile = ['jpeg', 'jpg', 'png', 'webp']
+
+    // validate size image
+    if (file.size > 1048576) {
+      throw 'File terlalu besar, max 1mb'
+    }
+
+    if (allowFile.find((item) => item === mimeType)) {
+      cloudinary.v2.uploader.upload(
+        file.tempFilePath,
+        { public_id: uuidv4() },
+        function (error, result) {
+          if (error) {
+            throw 'Upload foto gagal'
+          }
+
+          // Store hash in your password DB.
+          const addToDb = recipes.addNewRecipe({
+            name,
+            description,
+            category,
+            picture: result.url,
+            ingredients,
+            video,
+          })
+
+          res.json({
+            status: true,
+            message: 'berhasil di tambah',
+            data: addToDb,
+            // path: uploadPath,
+          })
+        }
+      )
+    } else {
+      throw 'Upload foto gagal, hanya menerima format photo'
+    }
+
+    // INSERT INTO account (id, name, email, password, phone, photo) VALUES ("bilkis")
+  } catch (error) {
+    console.log(error)
+    res.status(error?.code ?? 500).json({
+      status: false,
+      message: error?.message ?? error,
+      data: [],
+    })
+  }
+}
+
+module.exports = { getRecipe, postRecipe }
