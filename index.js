@@ -6,7 +6,7 @@ const helmet = require('helmet')
 const xss = require('xss-clean')
 const fileUpload = require('express-fileupload')
 const path = require('path')
-const port = 3000
+const port = 8080
 const userRoutes = require('./routes/users')
 const authRoutes = require('./routes/auth')
 const recipeRoutes = require('./routes/recipe')
@@ -48,6 +48,14 @@ app.use('/auth', authRoutes)
 
 // registre recipe route
 app.use('/recipe', recipeRoutes)
+
+// run app
+app.get('/', (req, res) => {
+  res.json({
+    status: true,
+    message: 'app runing well',
+  })
+})
 
 // aku menjalankan express pada port variable diatas
 app.listen(port, () => {

@@ -8,13 +8,15 @@ const login = async (req, res) => {
     const { email, password } = req.body
 
     const checkEmail = await accouts.getUserByEmail({ email })
+    console.log(checkEmail)
 
     // kalo check email isinya tidak ada
     if (checkEmail?.length === 0) {
-      throw 'Email tidak terdaftar'
+      throw { code: 401, message: 'Email tidak terdaftar' }
     }
 
     bcrypt.compare(password, checkEmail[0].password, (err, result) => {
+      console.log('tes')
       try {
         if (err) {
           throw { code: 500, message: 'ada kesalah pada server' }
@@ -37,6 +39,7 @@ const login = async (req, res) => {
             message: 'login berhasil',
             data: {
               token,
+              profile: checkEmail[0],
             },
           })
         } else {
