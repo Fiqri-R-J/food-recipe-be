@@ -148,7 +148,7 @@ const editRecipe = async (req, res) => {
         defaultValue: getRecipe[0], // default value if input not add in postman
       })
     } else {
-      throw 'ID Tidak terdaftar'
+      throw 'ID Not Register'
     }
     res.json({
       status: true,
