@@ -91,6 +91,7 @@ const postRecipe = async (req, res) => {
         { public_id: uuidv4() },
         function (error, result) {
           if (error) {
+            console.log(error)
             throw 'Upload foto gagal'
           }
 
