@@ -32,6 +32,12 @@ const getRecipeById = async (params) => {
   return await db`SELECT * FROM recipe WHERE id = ${id}`
 }
 
+const getRecipeBySlug = async (params) => {
+  const { slug } = params
+
+  return await db`SELECT * FROM recipe WHERE slug = ${slug}`
+}
+
 // add new user to db
 const addNewRecipe = async (params) => {
   const d = new Date()
@@ -39,11 +45,12 @@ const addNewRecipe = async (params) => {
   const month = d.getMonth()
   const year = d.getFullYear()
   const newDate = `${date}/${month}/${year}`
-  const { name, description, category, picture, ingredients, video } = params
+  const { name, description, category, picture, ingredients, video, slug } =
+    params
 
   return await db`
-      INSERT INTO recipe (name, description, category, picture, ingredients, video, date) 
-      VALUES (${name}, ${description}, ${category}, ${picture}, ${ingredients}, ${video}, ${newDate})
+      INSERT INTO recipe (name, description, category, picture, ingredients, video, date, slug) 
+      VALUES (${name}, ${description}, ${category}, ${picture}, ${ingredients}, ${video}, ${newDate}, ${slug})
     `
 }
 
@@ -81,6 +88,7 @@ const deleteRecipeById = async (params) => {
 
 module.exports = {
   getAllRecipePagination,
+  getRecipeBySlug,
   searchRecipeByName,
   getAllRecipe,
   getRecipeById,

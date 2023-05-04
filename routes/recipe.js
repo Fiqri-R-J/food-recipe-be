@@ -4,7 +4,7 @@ const { useRedis } = require('../middlewares/redis')
 
 // READ
 // /data/:id? <-- optional parameter
-router.get('/:id?', useRedis, recipeController.getRecipe)
+router.get('/:slug?', useRedis, recipeController.getRecipe)
 
 // CREATE
 router.post('/add', recipeController.postRecipe)

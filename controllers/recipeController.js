@@ -5,11 +5,11 @@ const { cloudinary } = require('../helper')
 
 const getRecipe = async (req, res) => {
   try {
-    const { id } = req.params // /data/:id
+    const { slug } = req.params // /data/:id
     const { page, limit, sort } = req.query // ?page=1&limit=5
 
-    if (id) {
-      const getSelectedRecipe = await recipes.getRecipeById({ id })
+    if (slug) {
+      const getSelectedRecipe = await recipes.getRecipeBySlug({ slug })
 
       // store data to redis for 10 seconds
       connect.set('url', req.originalUrl, 'ex', 10) // string only
@@ -19,7 +19,7 @@ const getRecipe = async (req, res) => {
       res.status(200).json({
         status: true,
         message: 'data berhasil di ambil',
-        data: getSelectedRecipe,
+        data: getSelectedRecipe[0],
       })
     } else {
       // OFFSET & LIMIT
@@ -79,6 +79,7 @@ const postRecipe = async (req, res) => {
     // let uploadPath = `${path.dirname(require.main.filename)}/public/${fileName}`
     let mimeType = file.mimetype.split('/')[1]
     let allowFile = ['jpeg', 'jpg', 'png', 'webp']
+    let slug = name.toLowerCase().replaceAll(' ', '-')
 
     // validate size image
     if (file.size > 1048576) {
@@ -102,6 +103,7 @@ const postRecipe = async (req, res) => {
             picture: result.url,
             ingredients,
             video,
+            slug,
           })
 
           res.json({
