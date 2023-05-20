@@ -5,7 +5,7 @@ const getAllRecipePagination = async (params) => {
   const { limit, page, sort } = params
 
   return await db`SELECT * FROM recipe ${
-    sort ? db`ORDER BY name DESC` : db`ORDER BY name ASC`
+    sort ? db`ORDER BY id DESC` : db`ORDER BY id ASC`
   } LIMIT ${limit} OFFSET ${limit * (page - 1)} `
 }
 
@@ -14,7 +14,7 @@ const getAllRecipe = async (params) => {
   const { sort } = params
 
   return await db`SELECT * FROM recipe ${
-    sort ? db`ORDER BY name DESC` : db`ORDER BY name ASC`
+    sort ? db`ORDER BY id DESC` : db`ORDER BY id ASC`
   }`
 }
 
